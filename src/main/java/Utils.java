@@ -9,7 +9,7 @@ public class Utils
         List<Triangle> triangleList = new ArrayList<>();
         for (String line : lines)
         {
-            double[] coordinates = toDoubleArray(line);
+            int[] coordinates = toIntArray(line);
             Point[] points = createPoints(coordinates);
             triangleList.add(createTriangle(points));
         }
@@ -18,18 +18,31 @@ public class Utils
 
     public static void writeTrianglesToFile(Triangle[] triangles, String filename) throws FileNotFoundException
     {
-        List<String> lines = new ArrayList<>();
-        for (Triangle triangle : triangles)
+        String[] coordinates = toStringArrayCoordinates(triangles);
+        for (String line : coordinates)
         {
-            double[] coordinates = {triangle.pointA.x, triangle.pointA.y, triangle.pointB.x, triangle.pointB.y,
-            triangle.pointC.x, triangle.pointC.y};
-            String line = toString(coordinates);
-            lines.add(line);
             writeLineToFile(line, filename);
         }
     }
 
-    private static String toString(double[] arr)
+    public static String[] toStringArrayCoordinates(Triangle[] triangles)
+    {
+        List<String> lines = new ArrayList<>();
+        for (Triangle triangle : triangles)
+        {
+            String line = toString(createArrayCoordinates(triangle));
+            lines.add(line);
+        }
+        return lines.toArray(new String[0]);
+    }
+
+    public static int[] createArrayCoordinates(Triangle triangle)
+    {
+        return new int[] {triangle.pointA.x, triangle.pointA.y, triangle.pointB.x, triangle.pointB.y,
+                triangle.pointC.x, triangle.pointC.y};
+    }
+
+    private static String toString(int[] arr)
     {
         if (arr == null)
         {
@@ -52,6 +65,7 @@ public class Utils
         try (FileWriter writer = new FileWriter(filename, true))
         {
             writer.write(line);
+            writer.flush();
         }
         catch (IOException e)
         {
@@ -59,7 +73,7 @@ public class Utils
         }
     }
 
-    private static Point[] createPoints(double[] coordinates)
+    private static Point[] createPoints(int[] coordinates)
     {
         List<Point> pointList = new ArrayList<>();
         for (int i = 0; i < coordinates.length; i++)
@@ -77,27 +91,27 @@ public class Utils
         return new Triangle(points[0], points[1], points[2]);
     }
 
-    private static double[] toDoubleArray(String str)
+    private static int[] toIntArray(String str)
     {
         Scanner scanner = new Scanner(str);
         scanner.useLocale(Locale.ROOT);
         scanner.useDelimiter("(\\s|[,;])+");
-        List<Double> list = new ArrayList<>();
+        List<Integer> list = new ArrayList<>();
         while (scanner.hasNext())
         {
-            list.add(scanner.nextDouble());
+            list.add(scanner.nextInt());
         }
-        Double[] arr = list.toArray(new Double[0]);
+        Integer[] arr = list.toArray(new Integer[0]);
         return toPrimitive(arr);
     }
 
-    private static double[] toPrimitive(Double[] arr)
+    private static int[] toPrimitive(Integer[] arr)
     {
         if (arr == null)
         {
             return null;
         }
-        double[] result = new double[arr.length];
+        int[] result = new int[arr.length];
         for (int i = 0; i < arr.length; i++)
         {
             result[i] = arr[i];

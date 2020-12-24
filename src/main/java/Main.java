@@ -4,7 +4,7 @@ public class Main
 {
     public static void main(String[] args) throws FileNotFoundException
     {
-      run(parseArgs(args));
+        run(parseArgs(args));
     }
 
     public static InputArgs parseArgs(String[] args)
